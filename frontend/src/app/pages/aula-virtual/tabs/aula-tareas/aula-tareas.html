@@ -1,0 +1,50 @@
+<div class="tareas-container fade-in">
+  
+  <div *ngIf="cargando" class="loading-wrapper">
+    <div class="spinner-border" role="status"></div>
+    <span>Cargando tus tareas...</span>
+  </div>
+
+  <div class="tareas-lista" *ngIf="!cargando">
+    
+    <article class="tarea-card" 
+             *ngFor="let t of tareas" 
+             (click)="verDetalle(t.idTarea)">
+      
+      <div class="card-main">
+        <div class="icon-container bg-verde">
+          <i class="bi bi-clipboard-check"></i>
+        </div>
+
+        <div class="text-box">
+          <h3 class="titulo">{{ t.titulo }}</h3>
+          <p class="descripcion">{{ t.descripcion }}</p>
+        </div>
+      </div>
+
+      <div class="card-side">
+        <div class="info-deadline">
+          <span class="label">Publicado</span>
+          <div class="fecha-valor">
+            <i class="bi bi-calendar3"></i>
+            <span>{{ t.fechaPublicacion | date:'dd MMM, yyyy' }}</span>
+          </div>
+        </div>
+        
+        <div class="action-icon">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+
+    </article>
+
+    <div class="sin-datos" *ngIf="tareas.length === 0">
+      <div class="empty-state-icon">
+        <i class="bi bi-clipboard-x"></i>
+      </div>
+      <h3>¡Todo al día!</h3>
+      <p>No hay tareas pendientes en este taller.</p>
+    </div>
+
+  </div>
+</div>

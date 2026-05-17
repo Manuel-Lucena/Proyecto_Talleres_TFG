@@ -1,0 +1,54 @@
+/* ==========================================================================
+   SISTEMA DE ACCESIBILIDAD GLOBAL
+   Controla: Contraste dinámico, Modos de Daltonismo y Escalado de Fuente.
+   ========================================================================== */
+
+:root {
+  --app-contrast: 100%;
+}
+
+/**
+ * Contenedor principal para filtros de imagen.
+ * Se aplica a este wrapper para evitar que los filtros afecten al panel 
+ * de accesibilidad flotante y para asegurar un rendimiento óptimo.
+ */
+.app-content-wrapper {
+  filter: contrast(var(--app-contrast));
+  transition: filter 0.3s ease; 
+  min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   FILTROS DE DALTONISMO
+   Ajustan la paleta mediante sepia, rotación de hue y saturación para 
+   mejorar la distinción de colores según la deficiencia visual.
+   -------------------------------------------------------------------------- */
+
+// 1. Protanopia: Deficiencia de fotorreceptores rojos
+body.protanopia .app-content-wrapper {
+  filter: contrast(var(--app-contrast)) sepia(50%) hue-rotate(-50deg) saturate(200%);
+}
+
+// 2. Deuteranopia: Deficiencia de fotorreceptores verdes (más común)
+body.deuteranopia .app-content-wrapper {
+  filter: contrast(var(--app-contrast)) sepia(50%) hue-rotate(-10deg) saturate(180%);
+}
+
+// 3. Tritanopia: Deficiencia de fotorreceptores azules (poco común)
+body.tritanopia .app-content-wrapper {
+  filter: contrast(var(--app-contrast)) sepia(30%) hue-rotate(140deg) saturate(150%);
+}
+
+/* --------------------------------------------------------------------------
+   ESCALADO DE FUENTE (TIPOGRAFÍA)
+   Controlado por clases aplicadas al body para herencia global.
+   -------------------------------------------------------------------------- */
+
+// Tamaño pequeño (Para usuarios que prefieren más densidad de datos)
+body.font-small { font-size: 0.85rem; }
+
+// Tamaño base (Estándar de la aplicación)
+body.font-medium { font-size: 1rem; }
+
+// Tamaño grande (Mejora la legibilidad para usuarios con visión baja)
+body.font-large { font-size: 1.2rem; }

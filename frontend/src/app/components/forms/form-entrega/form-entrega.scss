@@ -1,0 +1,314 @@
+/* ==========================================================================
+   SISTEMA DE MODALES: PANEL DE ENTREGA DE TAREAS (ALUMNO)
+   Gestión de carga de archivos, comentarios y estados de entrega.
+   ========================================================================== */
+
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+@use '../../../../styles/formularios' as f;
+
+// 1. CAPA DE FONDO (OVERLAY)
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(v.$color-secundario-frio-2, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 1.5rem;
+    @include m.animacion-entrada;
+}
+
+// 2. CUERPO DEL MODAL (ANCHO MEDIO)
+.modal-body {
+    background: v.$color-neutro-max;
+    width: 100%;
+    max-width: 600px;
+    border-radius: v.$radio-curvatura * 2;
+    box-shadow: v.$sombra-nivel-3;
+    padding: 3.5rem;
+    position: relative;
+
+    .btn-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        @include m.boton-cerrar-circular;
+
+        i {
+            font-size: 1.2rem;
+            line-height: 1;
+            display: block;
+        }
+    }
+}
+
+// 3. CABECERA CON CONTEXTO DE TAREA
+.modal-header {
+    margin-bottom: 2.5rem;
+
+    .badge-tarea {
+        display: inline-block;
+        background: rgba(v.$color-secundario-calido-2, 0.1);
+        color: v.$color-secundario-calido-2;
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-family: v.$fuente-enfasis;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.8rem;
+    }
+
+    .tarea-titulo {
+        font-family: v.$fuente-enfasis;
+        font-size: 1.8rem;
+        color: v.$color-secundario-frio-2;
+        margin: 0 0 0.5rem 0;
+        font-weight: 900;
+        line-height: 1.2;
+    }
+
+    .tarea-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: v.$color-superficie-suave;
+        font-size: 0.9rem;
+        font-weight: 600;
+
+        i {
+            color: v.$color-secundario-calido-1;
+        }
+    }
+}
+
+// 4. CAMPO DE COMENTARIOS
+.modal-content-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.label-custom {
+    display: block;
+    font-family: v.$fuente-enfasis;
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: v.$color-secundario-frio-2;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.textarea-entrega {
+    @include m.estilo-input-base;
+    min-height: 100px;
+    resize: none;
+    font-family: v.$fuente-lectura;
+}
+
+// 5. ZONA DE SUBIDA (DROPZONE)
+.dropzone-entrega {
+    @include m.zona-subida-estandar;
+    position: relative;
+    min-height: 140px;
+    flex-direction: column;
+    padding: 2rem;
+    border-width: 2px;
+    transition: all 0.3s ease;
+
+    // Estado de error para la zona de drop
+    &.error {
+        border-color: v.$color-secundario-calido-1;
+        background-color: rgba(v.$color-secundario-calido-1, 0.02);
+
+        .dropzone-info i {
+            color: v.$color-secundario-calido-1;
+        }
+    }
+
+    .input-hidden {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .dropzone-info {
+        text-align: center;
+        pointer-events: none;
+
+        i {
+            display: block;
+            font-size: 2.5rem;
+            color: v.$color-secundario-calido-2;
+            margin-bottom: 10px;
+        }
+
+        .main-text {
+            display: block;
+            font-weight: 700;
+            color: v.$color-secundario-frio-2;
+            font-size: 0.95rem;
+        }
+
+        .sub-text {
+            font-size: 0.8rem;
+            color: v.$color-superficie-suave;
+        }
+    }
+}
+
+
+.mensaje-error-archivo {
+    min-height: 20px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: slideIn 0.3s ease-out;
+
+    i {
+        color: v.$color-secundario-calido-1;
+        font-size: 0.9rem;
+    }
+
+    span {
+        color: v.$color-secundario-calido-1;
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: v.$fuente-lectura;
+    }
+}
+
+// 6. LISTADO DINÁMICO DE ARCHIVOS
+.grid-archivos-entregados {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1rem;
+
+    .file-chip {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        background: v.$color-neutro-max;
+        border: 1px solid #eee;
+        border-radius: v.$radio-curvatura;
+        animation: slideIn 0.3s ease-out;
+
+        i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .name {
+            flex: 1;
+            font-weight: 600;
+            color: v.$color-secundario-frio-2;
+            font-size: 0.85rem;
+        }
+
+        .btn-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: v.$color-superficie-suave;
+            padding: 5px;
+            display: flex;
+            transition: color 0.2s;
+
+            &:hover {
+                color: v.$color-secundario-calido-1;
+            }
+        }
+
+        &.existente {
+            border-left: 4px solid v.$color-secundario-calido-2;
+        }
+
+        // Verde
+
+        &.nuevo {
+            border-left: 4px solid v.$color-marca-principal;
+        }
+
+        // Naranja
+    }
+}
+
+// 7. FOOTER UNIFICADO (BOTONERA)
+.modal-footer {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.acciones-form-unificada {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 450px;
+
+    @media (max-width: 480px) {
+        flex-direction: column-reverse;
+    }
+
+    button {
+        flex: 1;
+        height: 52px;
+        border-radius: v.$radio-curvatura;
+        font-family: v.$fuente-enfasis;
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancelar {
+        background: #f1f3f5;
+        border: 1px solid #e2e4e7;
+        color: v.$color-superficie-suave;
+        cursor: pointer;
+
+        &:hover {
+            background: #e9ecef;
+            color: v.$color-secundario-frio-2;
+            border-color: #d1d4d7;
+        }
+    }
+
+    .btn-enviar-final {
+        @include m.boton-primario;
+        margin: 0;
+        border: none;
+
+        &:disabled {
+            background-color: #e0e0e0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    }
+}
+
+// Animación para la aparición de archivos y mensajes
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

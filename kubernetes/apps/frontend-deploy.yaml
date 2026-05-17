@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-taller # Nombre del despliegue del frontend
+spec:
+  replicas: 1 # Número de instancias del servidor web corriendo a la vez
+  selector:
+    matchLabels:
+      app: frontend-taller
+  template:
+    metadata:
+      labels:
+        app: frontend-taller
+    spec:
+      containers:
+        - name: frontend
+          image: gestion-talleres-front:latest # Imagen Docker de Angular con Nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80 # Puerto estándar HTTP expuesto por Nginx
+          resources:
+            requests:
+              cpu: "100m"      # Reserva mínima de CPU
+              memory: "128Mi"  # Reserva mínima de RAM
+            limits:
+              cpu: "300m"      # Límite máximo de CPU permitido
+              memory: "256Mi"  # Límite máximo de RAM permitido
+          
+          # Mapeo de carpetas de almacenamiento y configuración dentro de Nginx
+          volumeMounts:
+            - name: disco-compartido
+              mountPath: "/usr/share/nginx/html/noticias"
+              subPath: "public/noticias" # Subcarpeta en el PVC para imágenes de noticias
+            - name: disco-compartido
+              mountPath: "/usr/share/nginx/html/usuarios"
+              subPath: "public/usuarios" # Subcarpeta en el PVC para avatares de usuarios
+            - name: disco-compartido
+              mountPath: "/usr/share/nginx/html/talleres"
+              subPath: "public/talleres" # Subcarpeta en el PVC para multimedia de talleres
+            - name: config-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf # Inyecta el archivo de configuración personalizado de Nginx
+              
+      # Definición de los volúmenes origen 
+      volumes:
+        - name: disco-compartido
+          persistentVolumeClaim:
+            claimName: taller-storage-pvc # Conexión al almacenamiento físico de archivos
+        - name: config-volume
+          configMap:
+            name: nginx-config # Enlace al ConfigMap con la lógica de rutas y caché de Nginx

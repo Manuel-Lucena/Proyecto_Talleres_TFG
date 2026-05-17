@@ -1,0 +1,22 @@
+/* ==========================================================================
+   ESTILOS GLOBALES DE LA APLICACIÓN (styles.scss)
+   ========================================================================== */
+
+// 1. TEMAS DE LIBRERÍAS EXTERNAS
+// Importación de los estilos base para el componente ng-select (Selects avanzados)
+@import "@ng-select/ng-select/themes/default.theme.css";
+
+// 2. MÓDULO DE ACCESIBILIDAD
+// Contiene las clases para daltonismo, contrastes y ajustes de fuentes
+@import 'accessibility';
+
+// 3. SISTEMA DE MODALES Y OVERLAYS
+// Estilos base para las capas de diálogo y overlays de toda la app
+@import "modales";
+
+
+@font-face {
+  font-family: 'bootstrap-icons';
+  src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff2") format("woff2");
+  font-display: swap; 
+}

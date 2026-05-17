@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-taller # Nombre del despliegue en Kubernetes
+spec:
+  replicas: 1 # Número de instancias del contenedor corriendo a la vez
+  selector:
+    matchLabels:
+      app: backend-taller
+  template:
+    metadata:
+      labels:
+        app: backend-taller
+    spec:
+      containers:
+        - name: backend
+          image: gestion-talleres-back:latest # Imagen Docker de tu backend Java
+          imagePullPolicy: IfNotPresent # Usa la imagen local 
+          ports:
+            - containerPort: 8080 # Puerto interno de la aplicación
+          resources:
+            requests:
+              cpu: "200m"     # CPU mínima asignada
+              memory: "256Mi" # RAM mínima asignada
+            limits:
+              cpu: "500m"     # Máximo de CPU permitido
+              memory: "512Mi" # Máximo de RAM permitido
+          env:
+            - name: DB_HOST
+              value: "mysql-service" # Conexión DNS al contenedor de la base de datos
+            - name: STORAGE_PUBLIC_PATH
+              value: "/app/data" # Rutas para subida de archivos multimedia
+            - name: STORAGE_PROTECTED_PATH
+              value: "/app/data/protected"
+            - name: JWT_SECRET
+              value: "TuClaveSuperSecreta2026" # Clave para firmar los tokens de sesión
+            - name: MAIL_HOST
+              value: "sandbox.smtp.mailtrap.io" # Configuración de Mailtrap para envíos de correo
+            - name: MAIL_USER
+              value: "40f912c6d6f881"
+            - name: MAIL_PASS
+              value: "46ecc3465c4cec"
+          volumeMounts:
+            - name: disco-compartido
+              mountPath: "/app/data" # Carpeta del contenedor asociada al volumen persistente
+      volumes:
+        - name: disco-compartido
+          persistentVolumeClaim:
+            claimName: taller-storage-pvc # PVC que gestiona el almacenamiento físico

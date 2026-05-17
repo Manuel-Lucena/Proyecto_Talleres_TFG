@@ -1,0 +1,141 @@
+<div class="admin-wrapper">
+  <header class="admin-header">
+    <div class="title-group">
+      <h1 class="txt-h1">Gestión de Talleres</h1>
+      <p class="txt-bajada">Administra la oferta formativa y el control de cupos</p>
+    </div>
+    <button class="btn-primario-aula" (click)="abrirCrear()">
+      <i class="bi bi-palette-fill"></i>
+      <span class="btn-text">Nuevo Taller</span>
+    </button>
+  </header>
+
+  <section class="admin-toolbar shadow-1">
+    <div class="search-group">
+      <div class="criteria-box">
+        <select [(ngModel)]="criterioBusqueda" class="select-criteria">
+          <option value="todos">Todos</option>
+          <option value="nombre">Taller</option>
+          <option value="profesor">Profesor</option>
+        </select>
+      </div>
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" [placeholder]="getPlaceholder()" [(ngModel)]="busqueda" class="input-aula">
+      </div>
+    </div>
+  </section>
+
+  <div class="admin-card shadow-1">
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Taller</th>
+            <th>Profesor</th>
+            <th>Fechas</th>
+            <th>Cupos</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of talleresFiltrados | paginate:registrosPorPagina:paginaActual; track t.idTaller) {
+          <tr>
+            <td class="col-main">
+              <div class="workshop-item">
+                <div class="img-frame">
+                  <img [src]="t?.fotoRuta ? '/talleres/' + t.fotoRuta : '/talleres/taller_default.png'"
+                    alt="Portada">
+                </div>
+                <div class="workshop-info">
+                  <span class="t-name">{{ t.nombre }}</span>
+                  <p class="t-desc">{{ t.descripcion }}</p>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="prof-tag">
+                <i class="bi bi-person-badge"></i>
+                <span>{{ t.nombreCompletoProfesor }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="date-stack">
+                <span class="d-range">{{ t.fechaInicio | date:'dd/MM' }} - {{ t.fechaFin | date:'dd/MM' }}</span>
+                <span class="d-year">{{ t.fechaInicio | date:'yyyy' }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="plazas-box">
+                <span class="p-count">{{ t.plazasDisponibles }}/{{ t.plazasMaximas }}</span>
+                <div class="p-bar">
+                  <div class="p-fill" [style.width.%]="(t.plazasDisponibles / t.plazasMaximas) * 100"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="price-tag">{{ t.precio | currency:'EUR' }}</span>
+            </td>
+            <td>
+              <div class="actions-group">
+                <button class="btn-tool info" (click)="verInscritos(t.idTaller)" title="Ver Alumnos Inscritos">
+                  <i class="bi bi-people-fill"></i>
+                </button>
+                <button class="btn-tool schedule" (click)="verHorario(t.idTaller)" title="Gestionar Horario">
+                  <i class="bi bi-calendar3"></i>
+                </button>
+                <button class="btn-tool edit" (click)="abrirEditar(t)" title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn-tool delete" (click)="eliminarTaller(t.idTaller)" title="Eliminar">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-pagination" *ngIf="talleresFiltrados.length > 0">
+      <div class="pagination-info">
+        Mostrando <strong>{{ (paginaActual - 1) * registrosPorPagina + 1 }}</strong>
+        a <strong>{{ Math.min(paginaActual * registrosPorPagina, talleresFiltrados.length) }}</strong>
+        de <strong>{{ talleresFiltrados.length }}</strong> talleres
+      </div>
+
+      <div class="pagination-controls">
+        <div class="page-selector">
+          <span>Página</span>
+          <select class="select-pag" [(ngModel)]="paginaActual">
+            @for (p of [].constructor(Math.ceil(talleresFiltrados.length / registrosPorPagina)); track $index) {
+            <option [value]="$index + 1">{{ $index + 1 }}</option>
+            }
+          </select>
+          <span>de {{ Math.ceil(talleresFiltrados.length / registrosPorPagina) }}</span>
+        </div>
+
+        <div class="d-flex gap-1">
+          <button class="btn-pag" [disabled]="paginaActual === 1" (click)="paginaActual = paginaActual - 1">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="btn-pag" [disabled]="paginaActual * registrosPorPagina >= talleresFiltrados.length"
+            (click)="paginaActual = paginaActual + 1">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarModal) {
+<app-form-taller [tallerParaEditar]="tallerSeleccionado" [profesores]="profesores" (cerrar)="mostrarModal = false"
+  (guardado)="ejecutarGuardado($event)">
+</app-form-taller>
+}
+
+<app-confirmacion></app-confirmacion>
+<app-modal-notificacion></app-modal-notificacion>

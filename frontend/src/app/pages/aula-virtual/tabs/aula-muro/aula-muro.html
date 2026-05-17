@@ -1,0 +1,54 @@
+<div class="muro-container fade-in">
+  
+  <div *ngIf="cargando" class="loading-wrapper">
+    <div class="spinner-border" role="status"></div>
+    <span>Cargando actividad...</span>
+  </div>
+
+  <div class="actividad-lista" *ngIf="!cargando">
+    
+    <article class="actividad-card" 
+             *ngFor="let item of actividades" 
+             [ngClass]="{'es-tarea': item.tipo === 'TAREA'}"
+             (click)="verDetalle(item)">
+      
+      <div class="card-content">
+        <div class="icon-container" [ngClass]="item.tipo === 'TAREA' ? 'bg-verde' : 'bg-azul'">
+          <i *ngIf="item.tipo === 'MATERIAL'" class="bi bi-file-earmark-text"></i>
+          <i *ngIf="item.tipo === 'TAREA'" class="bi bi-clipboard-check"></i>
+        </div>
+
+        <div class="main-info">
+          <header class="info-header">
+          
+            <h3 class="titulo">{{ item.titulo }}</h3>
+          </header>
+          
+          <p class="resumen">
+            {{ item.tipo === 'TAREA' ? item.descripcion : item.contenido }}
+          </p>
+        </div>
+      </div>
+
+      <div class="card-meta">
+        <div class="fecha">
+          <i class="bi bi-clock"></i>
+          <span>{{ item.fechaMuro | date:'dd MMM, yyyy' }}</span>
+        </div>
+        <div class="flecha-link">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+
+    </article>
+
+    <div class="sin-datos" *ngIf="actividades.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-chat-dots"></i>
+      </div>
+      <h3>Aún no hay actividad</h3>
+      <p>Las tareas y materiales publicados aparecerán aquí.</p>
+    </div>
+
+  </div>
+</div>

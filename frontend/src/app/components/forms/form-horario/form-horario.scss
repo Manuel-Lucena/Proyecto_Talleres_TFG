@@ -1,0 +1,195 @@
+/* ==========================================================================
+   SISTEMA DE MODALES: GESTIÓN DE SESIONES Y HORARIOS
+   Diseño compacto para entrada de datos rápidos (Fecha/Hora).
+   Ajustado para mantener Título y Acciones fijos.
+   ========================================================================== */
+
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+@use '../../../../styles/formularios' as f;
+
+// 1. ESTRUCTURA Y OVERLAY
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(v.$color-secundario-frio-2, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    @include m.animacion-entrada;
+}
+
+// 2. CUERPO DEL MODAL (VERSIÓN COMPACTA)
+.modal-body {
+    background: v.$color-neutro-max;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh; 
+    border-radius: v.$radio-curvatura * 2;
+    box-shadow: v.$sombra-nivel-3;
+    padding: 3.5rem 3rem;
+    position: relative;
+    
+    // Configuración para scroll interno
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+
+    .btn-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        @include m.boton-cerrar-circular;
+        z-index: 10;
+    }
+}
+
+// 3. CABECERA CENTRADA (FIJA)
+.modal-header-simple {
+    flex-shrink: 0; 
+    margin-bottom: 2.5rem;
+    text-align: center;
+
+    .titulo-formulario {
+        font-family: v.$fuente-enfasis;
+        font-size: 1.8rem;
+        color: v.$color-secundario-frio-2;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitulo {
+        font-size: 0.9rem;
+        color: v.$color-superficie-suave;
+        font-weight: 500;
+    }
+}
+
+// 4. FORMULARIO Y REJILLA (ZONA SCROLEABLE)
+.form-sesion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    // Gestión del scroll interno
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-right: -0.5rem;
+    
+    // Personalización básica del scroll
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: v.$color-fondo-pagina;
+        border-radius: 10px;
+    }
+}
+
+.fila-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+}
+
+.campo-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-family: v.$fuente-enfasis;
+        font-weight: 800;
+        font-size: 0.7rem;
+        color: v.$color-secundario-frio-2;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .input-personalizado {
+        @include m.estilo-input-base;
+        height: 50px;
+
+        &.is-invalid {
+            border-color: v.$color-secundario-calido-1;
+            background-color: rgba(v.$color-secundario-calido-1, 0.02);
+        }
+    }
+}
+
+.error-container {
+    min-height: 20px;
+    margin-top: 4px;
+
+    .error-message {
+        color: v.$color-secundario-calido-1;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+}
+
+// 5. ACCIONES (BOTONERA FIJA ABAJO)
+.acciones-form {
+    flex-shrink: 0; 
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 1rem;
+    width: 100%;
+    background: v.$color-neutro-max;
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+
+    button {
+        height: 52px;
+        border-radius: v.$radio-curvatura;
+        font-family: v.$fuente-enfasis;
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancelar {
+        background: v.$color-fondo-pagina;
+        border: 2px solid transparent;
+        color: v.$color-superficie-suave;
+        cursor: pointer;
+
+        &:hover {
+            background: #e9ecef;
+            color: v.$color-secundario-frio-2;
+        }
+    }
+
+    .btn-guardar {
+        @include m.boton-primario;
+        border: none;
+        margin: 0;
+        gap: 8px;
+
+        i {
+            font-size: 1.1rem;
+        }
+
+        &:disabled {
+            background-color: #e0e0e0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    }
+}

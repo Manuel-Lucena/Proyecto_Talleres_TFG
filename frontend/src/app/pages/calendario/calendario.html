@@ -1,0 +1,31 @@
+<app-navbar></app-navbar>
+
+<div class="calendario-seccion">
+  <div class="tabs-container">
+    
+    <div class="tabs-header">
+      <a 
+        class="tab-btn" 
+        routerLink="talleres" 
+        routerLinkActive="active">
+        <i class="bi bi-calendar3"></i>
+        <span>Horario de Talleres</span>
+      </a>
+
+      <a 
+        class="tab-btn" 
+        routerLink="tareas" 
+        routerLinkActive="active">
+        <i class="bi bi-clipboard-check"></i>
+        <span>Próximas Entregas</span>
+      </a>
+    </div>
+
+    <div class="tabs-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>
+
+<app-footer></app-footer>

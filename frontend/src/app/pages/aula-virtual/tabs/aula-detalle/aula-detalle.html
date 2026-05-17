@@ -1,0 +1,278 @@
+<div class="pagina-detalle-wrapper">
+    <div class="contenedor-ancho fade-in">
+        <div class="nav-superior">
+            <button (click)='volver()' class="btn-link-volver">
+                <i class="bi bi-arrow-left-short"></i> Volver al curso
+            </button>
+
+            <div class="acciones-desktop-wrapper" *ngIf="esProfesor() && !esNuevo && !editando">
+                <button *ngIf="tipo === 'tarea'" (click)="irASeguimiento()" class="btn-link-volver">
+                    <i class="bi bi-people-fill"></i> Ver entregas y calificar
+                </button>
+
+                <button (click)="activarEdicion()" class="btn-link-volver">
+                    <i class="bi bi-pencil"></i> Editar {{ tipo }}
+                </button>
+
+                <button (click)="eliminarRecurso()" class="btn-link-volver btn-eliminar-recurso">
+                    <i class="bi bi-trash3"></i> Eliminar {{ tipo }}
+                </button>
+            </div>
+
+            <div class="acciones-mobile-wrapper" *ngIf="esProfesor() && !esNuevo && !editando">
+                <div class="dropdown">
+                    <button class="btn-dropdown-trigger" type="button" id="dropdownMenuAcciones"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenuAcciones">
+                        <li *ngIf="tipo === 'tarea'">
+                            <button class="dropdown-item" (click)="irASeguimiento()">
+                                <i class="bi bi-people-fill me-2"></i> Ver entregas
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" (click)="activarEdicion()">
+                                <i class="bi bi-pencil me-2"></i> Editar {{ tipo }}
+                            </button>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <button class="dropdown-item error-message" (click)="eliminarRecurso()">
+                                <i class="bi bi-trash3 me-2"></i> Eliminar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <main class="card-tarea-principal" *ngIf="!cargando && recurso">
+            <header class="encabezado-tarea">
+                <div class="info-titulo">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="badge-categoria" [ngClass]="tipo">{{ tipo }}</span>
+                        <button *ngIf="esProfesor() && !esNuevo" (click)="toggleVisibilidadRapida()"
+                            class="btn-ojo-minimal" [class.is-hidden]="!recurso.visible"
+                            [title]="recurso.visible ? 'Ocultar' : 'Mostrar'">
+                            <i class="bi" [ngClass]="recurso.visible ? 'bi-eye-fill' : 'bi-eye-slash'"></i>
+                        </button>
+                    </div>
+                    <h1 class="titulo-extremo" *ngIf="!editando && !esNuevo" [class.oculto]="!recurso.visible">
+                        {{ recurso.titulo }}
+                    </h1>
+                    <div *ngIf="esNuevo || editando" [formGroup]="form" class="mt-2">
+                        <input type="text" formControlName="titulo" class="form-control-titulo-edit"
+                            [placeholder]="'Título de la ' + tipo + '...'">
+                        <small class="error-message" *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+                            * El título es obligatorio
+                        </small>
+                    </div>
+                </div>
+
+                <div class="bloque-fechas-horizontal" *ngIf="!esNuevo && !editando">
+                    <div class="fecha-item">
+                        <span class="label">Publicado</span>
+                        <span class="valor">{{ (recurso.fechaPublicacion || recurso.createdAt) | date:"d 'de' MMMM 'de'
+                            y, HH:mm" }}</span>
+                    </div>
+                    <div class="fecha-item" *ngIf="tipo === 'tarea'">
+                        <span class="label">Fecha Límite</span>
+                        <span class="valor">{{ recurso.fechaEntrega | date:"d 'de' MMMM 'de' y, HH:mm" }}</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="seccion-enunciado">
+                <ng-container *ngIf="!editando">
+                    <div class="contenido-texto">{{ tipo === 'tarea' ? recurso.descripcion : recurso.contenido }}</div>
+                </ng-container>
+
+                <div *ngIf="editando" [formGroup]="form" class="form-edicion">
+                    <div class="mb-4">
+                        <label class="label-form">Descripción / Instrucciones</label>
+                        <textarea formControlName="descripcion" class="form-control-custom" rows="8"></textarea>
+                        <small class="error-message"
+                            *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+                            * La descripción es obligatoria
+                        </small>
+                    </div>
+
+                    <div class="row" *ngIf="tipo === 'tarea'">
+                        <div class="col-md-6 mb-4">
+                            <label class="label-form">Fecha de entrega</label>
+                            <input type="datetime-local" formControlName="fechaEntrega" class="form-control-custom"
+                                min="2024-01-01T00:00" max="2100-12-31T23:59">
+                            <small class="error-message" *ngIf="form.get('fechaEntrega')?.hasError('fechaInvalida')">
+                                * La fecha debe ser un año real (ej. 2026)
+                            </small>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="label-form">Extensiones permitidas</label>
+                            <div class="dropdown-extensiones-custom">
+                                <div class="dropdown-trigger-custom"
+                                    (click)="toggleDropdownExt(); $event.stopPropagation()">
+                                    <span class="text-truncate">
+                                        {{ form.get('extensionesPermitidas')?.value || 'Cualquier formato...' }}
+                                    </span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="dropdown-menu-custom" [class.show]="mostrarDropdownExt">
+                                    <label *ngFor="let ext of extensionesDisponibles" class="dropdown-item-check">
+                                        <input type="checkbox" [value]="ext.value" [checked]="estaMarcada(ext.value)"
+                                            (change)="onExtensionChange($event)">
+                                        <span>{{ ext.label }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="tipo === 'tarea' && esProfesor()">
+                        <div class="col-12 mb-4">
+                            <label class="label-form">Asignar a alumnos específicos</label>
+                            <div class="dropdown-extensiones-custom">
+                                <div class="dropdown-trigger-custom"
+                                    (click)="toggleDropdownAlumnos(); $event.stopPropagation()">
+                                    <span class="text-truncate">
+                                        {{ alumnosSeleccionadosIds.length === 0 ? 'Visible para todos los alumnos' :
+                                        alumnosSeleccionadosIds.length + ' alumnos seleccionados' }}
+                                    </span>
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+
+                                <div class="dropdown-menu-custom" [class.show]="mostrarDropdownAlumnos"
+                                    (click)="$event.stopPropagation()">
+
+                                    <div class="dropdown-header-acciones">
+                                        <span class="header-label">Asignación</span>
+                                        <button type="button" class="btn-accion-masiva" (click)="toggleTodosAlumnos()">
+                                            {{ alumnosSeleccionadosIds.length === alumnosTaller.length ? 'Desmarcar
+                                            todos' : 'Seleccionar todos' }}
+                                        </button>
+                                    </div>
+
+                                    <div class="p-2 border-bottom">
+                                        <input type="text" class="form-control-custom" placeholder="Buscar alumno..."
+                                            [(ngModel)]="filtroAlumno" [ngModelOptions]="{standalone: true}">
+                                    </div>
+
+                                    <div class="lista-alumnos-scroll">
+                                        <label *ngFor="let alu of alumnosFiltrados" class="dropdown-item-check">
+                                            <input type="checkbox"
+                                                [checked]="alumnosSeleccionadosIds.includes(alu.idUsuario)"
+                                                (change)="onAlumnoToggle(alu.idUsuario)">
+                                            <span>{{ alu.nombre }} {{ alu.apellidos }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seccion-archivos-adjuntos"
+                    *ngIf="archivosAdjuntos.length > 0 || nuevosArchivos.length > 0 || editando">
+                    <h4 class="subtitulo-archivos">Archivos y Materiales</h4>
+                    <div class="lista-archivos">
+                        <div *ngFor="let arch of archivosAdjuntos" class="item-archivo"
+                            [ngClass]="{'modo-edit': editando}">
+                            <i class="bi bi-file-earmark-text" (click)="descargarAdjunto(arch)"></i>
+                            <div class="file-meta" (click)="descargarAdjunto(arch)">
+                                <span class="file-name">{{ arch.nombre }}</span>
+                            </div>
+                            <button *ngIf="editando" class="btn-borrar-file" (click)="marcarParaEliminar(arch.id)"><i
+                                    class="bi bi-x-circle-fill"></i></button>
+                        </div>
+                        <div *ngFor="let arch of nuevosArchivos; let i = index" class="item-archivo nuevo">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                            <div class="file-meta"><span class="file-name">{{ arch.name }}</span><span
+                                    class="badge-nuevo">Por subir</span></div>
+                            <button class="btn-borrar-file" (click)="quitarNuevoArchivo(i)"><i
+                                    class="bi bi-x-circle-fill"></i></button>
+                        </div>
+                    </div>
+                    <div *ngIf="editando" class="zona-upload upload-pequeno mt-3">
+                        <i class="bi bi-plus-circle icono-subida"></i>
+                        <p class="m-0">Añadir más archivos...</p>
+                        <input type="file" multiple (change)="onFileChange($event)" class="input-hidden">
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer-save-central" *ngIf="editando">
+                <button (click)="cancelar()" class="btn-cancelar">Cancelar</button>
+                <button (click)="guardarTodo()" class="btn-publicar" [disabled]="cargando || form.invalid"> {{ esNuevo ?
+                    'Publicar Ahora' : 'Guardar Cambios' }}
+                </button>
+            </div>
+
+            <section class="seccion-tabla-moodle" *ngIf="tipo === 'tarea' && !editando && !esProfesor()">
+                <h3 class="titulo-tabla">Estado de la entrega</h3>
+                <div class="wrapper-tabla">
+                    <table class="tabla-custom">
+                        <tbody>
+                            <tr>
+                                <td class="col-gris">Estado de la entrega</td>
+                                <td class="col-blanca" [ngClass]="{'status-alerta': !recurso.entregado}">
+                                    {{ recurso.entregado ? 'Enviado para calificar' : 'No se ha enviado nada para esta
+                                    tarea' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-gris">Estado de la calificación</td>
+                                <td class="col-blanca">{{ recurso.calificacion || 'Sin calificar' }}</td>
+                            </tr>
+                            <tr *ngIf="recurso.entregado && entregaRealizada?.comentarioProfesor">
+                                <td class="col-gris">Comentario del profesor</td>
+                                <td class="col-blanca contenido-texto-entrega">
+                                    {{ entregaRealizada.comentarioProfesor }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-gris">Tiempo restante</td>
+                                <td class="col-blanca tiempo-restante">{{ calcularTiempo(recurso.fechaEntrega) }}</td>
+                            </tr>
+                            <tr *ngIf="recurso.entregado">
+                                <td class="col-gris">Última aclaración</td>
+                                <td class="col-blanca contenido-texto-entrega">{{ entregaRealizada?.textoEntrega || 'Sin
+                                    aclaraciones' }}</td>
+                            </tr>
+                            <tr *ngIf="recurso.entregado && archivosEntregaExistentes.length > 0">
+                                <td class="col-gris">Archivos enviados</td>
+                                <td class="col-blanca">
+                                    <div class="lista-vertical-entregas">
+                                        <div *ngFor="let a of archivosEntregaExistentes" class="archivo-entregado-link"
+                                            (click)="descargarArchivoAlumno(a)">
+                                            <i class="bi bi-file-earmark-arrow-down"></i><span>{{ a.nombre }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="contenedor-acciones-entrega">
+                    <button (click)="abrirModalEntrega()" class="btn-entrega-alumno">
+                        <i class="bi" [ngClass]="recurso.entregado ? 'bi-pencil-square' : 'bi-plus-lg'"></i>
+                        {{ recurso.entregado ? 'Editar entrega' : 'Añadir entrega' }}
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <div *ngIf="cargando" class="loader-full">
+            <div class="spinner-border color-carga"></div>
+        </div>
+    </div>
+</div>
+
+<app-form-entrega *ngIf="mostrarModalEntrega" [recurso]="recurso" [entregaExistente]="entregaRealizada"
+    [archivosExistentes]="archivosEntregaExistentes" (cerrar)="mostrarModalEntrega = false"
+    (guardado)="onEntregaGuardada()">
+</app-form-entrega>
+
+<app-confirmacion></app-confirmacion>
+<app-modal-notificacion></app-modal-notificacion>

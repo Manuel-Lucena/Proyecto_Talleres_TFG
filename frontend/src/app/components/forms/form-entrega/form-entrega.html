@@ -1,0 +1,84 @@
+<div class="modal-overlay" (click)="cerrar.emit()">
+  <div class="modal-body" (click)="$event.stopPropagation()" [formGroup]="entregaForm">
+
+    <button class="btn-close" (click)="cerrar.emit()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <header class="modal-header">
+      <div class="header-content">
+        <h2 class="tarea-titulo">{{ recurso?.titulo }}</h2>
+        <div class="tarea-meta" *ngIf="recurso?.fechaEntrega">
+          <i class="bi bi-clock-history"></i>
+          <span>Límite: {{ recurso?.fechaEntrega | date:'EEEE, d MMMM, HH:mm' }}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="modal-content-body">
+      <div class="seccion-input">
+        <app-form-label texto="Aclaraciones o comentarios"
+          ayuda="Puedes añadir una breve explicación sobre tu entrega o dudas que hayas tenido." forId="aclaraciones">
+        </app-form-label>
+        <textarea id="aclaraciones" formControlName="textoEntrega" class="textarea-entrega" rows="3"
+          placeholder="Escribe aquí cualquier observación sobre tu entrega...">
+        </textarea>
+      </div>
+
+      <div class="seccion-archivos">
+        <app-form-label texto="Archivos adjuntos" [requerido]="false"
+          [ayuda]="recurso?.extensionesPermitidas ? 'Formatos aceptados: ' + recurso.extensionesPermitidas : 'Cualquier formato permitido. Máx 10MB.'">
+        </app-form-label>
+
+        <div class="dropzone-entrega" [class.error]="extensionesError">
+          <input type="file" multiple (change)="onFileChange($event)" class="input-hidden">
+          <div class="dropzone-info">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <div class="texts">
+              <span class="main-text">Arrastra tus archivos o haz clic aquí</span>
+              <span class="sub-text">{{ recurso?.extensionesPermitidas || 'PDF, DOCX, ZIP' }} (Máx. 10MB)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mensaje-error-archivo" *ngIf="extensionesError">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <span>{{ mensajeError }}</span>
+        </div>
+
+        <div class="grid-archivos-entregados" *ngIf="archivosExistentes.length > 0 || nuevosArchivos.length > 0">
+          <div *ngFor="let arch of archivosExistentes" class="file-chip existente">
+            <i class="bi bi-file-earmark-check"></i>
+            <span class="name">{{ arch.nombre }}</span>
+            <button class="btn-del" (click)="marcarEliminar(arch.id)" title="Eliminar existente">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+
+          <div *ngFor="let arch of nuevosArchivos; let i = index" class="file-chip nuevo">
+            <i class="bi bi-file-earmark-arrow-up"></i>
+            <span class="name">{{ arch.name }}</span>
+            <button class="btn-del" (click)="quitarNuevo(i)" title="Quitar">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer">
+      <div class="acciones-form-unificada">
+        <button type="button" class="btn-cancelar" (click)="cerrar.emit()">
+          Cancelar
+        </button>
+        <button (click)="enviar()" class="btn-enviar-final"
+          [disabled]="cargando || entregaForm.invalid || extensionesError">
+          <span *ngIf="!cargando">
+            {{ entregaExistente ? 'Guardar cambios' : 'Enviar tarea' }}
+          </span>
+          <span *ngIf="cargando" class="spinner-border spinner-border-sm"></span>
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

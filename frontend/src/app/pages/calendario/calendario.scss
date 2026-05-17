@@ -1,0 +1,111 @@
+/* ==========================================================================
+   VISTA: CALENDARIO PADRE (DISEÑO EXPANDIDO Y FUSIONADO)
+   Gestiona la navegación por pestañas para las diferentes vistas del calendario.
+   ========================================================================== */
+
+@use '../../../styles/variables' as v;
+
+.calendario-seccion {
+  background-color: v.$color-fondo-pagina;
+  padding: 30px 2%; 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs-container {
+  max-width: 1600px; 
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  // -------------------------------------------------------------------------
+  // 1. HEADER DE NAVEGACIÓN (TABS)
+  // -------------------------------------------------------------------------
+  .tabs-header {
+    display: flex;
+    gap: 4px;
+    margin-bottom: -1px; 
+    padding-left: 10px;
+    position: relative;
+    z-index: 10;
+
+    .tab-btn {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 35px;
+      background: #e2e8f0;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      font-family: v.$fuente-enfasis;
+      font-weight: 700;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 1.2rem;
+      }
+
+
+      &:hover:not(.active) {
+        background: #cbd5e1;
+        transform: translateY(-2px);
+      }
+
+    
+      &.active {
+        background: white;
+        color: v.$color-marca-principal;
+        border: 1px solid #cbd5e1;
+        border-bottom: 3px solid white; 
+        border-top: 5px solid v.$color-marca-principal; 
+        pointer-events: none; 
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // 2. CONTENEDOR DE CONTENIDO DINÁMICO
+  // -------------------------------------------------------------------------
+  .tabs-content {
+    position: relative;
+    z-index: 5;
+  }
+}
+
+// -------------------------------------------------------------------------
+// 3. ADAPTACIÓN RESPONSIVA (MÓVIL)
+// -------------------------------------------------------------------------
+@media (max-width: 768px) {
+  .tabs-header {
+    flex-direction: column; 
+    padding-left: 0;
+
+    .tab-btn {
+      border-radius: 8px;
+      
+      &.active {
+        border-left: 6px solid v.$color-marca-principal;
+        border-bottom: 1px solid #cbd5e1;
+      }
+    }
+  }
+}
+
+// -------------------------------------------------------------------------
+// 4. ANIMACIONES DE TRANSICIÓN (FADE IN)
+// -------------------------------------------------------------------------
+@keyframes fadeInTab {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

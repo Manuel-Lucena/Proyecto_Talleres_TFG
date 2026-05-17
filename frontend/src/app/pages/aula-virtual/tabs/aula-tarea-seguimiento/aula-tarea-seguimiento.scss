@@ -1,0 +1,280 @@
+/* ==========================================================================
+   VISTA: SEGUIMIENTO DE ENTREGAS / CALIFICACIONES (ADMIN/TUTOR)
+   Layout de tabla avanzada para gestión de alumnos y notas.
+   ========================================================================== */
+
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+// 1. CONTENEDOR PRINCIPAL
+.seguimiento-wrapper {
+    padding: 2rem 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeInSeguimiento 0.5s ease-in-out;
+}
+
+// 2. HEADER CON DASHBOARD DE ESTADÍSTICAS RÁPIDAS
+.seguimiento-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+
+    .header-left {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+
+        // Botón volver con hover direccional
+        .btn-circular {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            color: v.$color-secundario-frio-2;
+
+            &:hover {
+                background: v.$color-marca-principal;
+                color: white;
+                border-color: v.$color-marca-principal;
+                transform: translateX(-3px);
+            }
+        }
+
+        .titulos {
+            h1 {
+                font-family: v.$fuente-enfasis;
+                font-size: 1.6rem;
+                font-weight: 800;
+                color: v.$color-secundario-frio-2;
+                margin: 0;
+            }
+
+            .subtitulo {
+                font-family: v.$fuente-lectura;
+                color: v.$color-superficie-suave;
+                margin: 0;
+                font-size: 1rem;
+            }
+        }
+    }
+
+    // Estadísticas numéricas (Entregados, Media, etc.)
+    .header-stats {
+        display: flex;
+        gap: 3rem;
+
+        .stat {
+            text-align: right;
+
+            .label {
+                display: block;
+                font-size: 0.65rem;
+                font-weight: 800;
+                color: #aaa;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 2px;
+            }
+
+            .valor {
+                font-family: v.$fuente-enfasis;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: v.$color-secundario-frio-2;
+
+                small {
+                    font-size: 0.9rem;
+                    color: #ccc;
+                }
+            }
+
+            &.highlight .valor {
+                color: v.$color-marca-principal;
+            }
+        }
+    }
+}
+
+// 3. TABLA DE GESTIÓN
+.card-tabla {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+}
+
+.tabla-gestion {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+        padding: 1rem 1.5rem;
+        background: #fafafa;
+        color: #999;
+        font-family: v.$fuente-enfasis;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f8f8f8;
+        vertical-align: middle;
+        font-family: v.$fuente-lectura;
+        color: v.$color-superficie-oscura;
+    }
+
+    // Celda de Usuario 
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .avatar-wrapper {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+
+            .user-name {
+                font-weight: 700;
+                color: v.$color-secundario-frio-2;
+                line-height: 1.2;
+            }
+
+            .user-email {
+                font-size: 0.75rem;
+                color: #aaa;
+            }
+        }
+    }
+
+    // Visualización de Nota (Valor / Máximo)
+    .nota-container {
+        display: flex;
+        align-items: baseline;
+
+        .nota-valor {
+            font-family: v.$fuente-enfasis;
+            font-weight: 800;
+            color: #ddd;
+
+            &.tiene-nota {
+                color: v.$color-marca-principal;
+                font-size: 1.2rem;
+            }
+        }
+
+        .nota-max {
+            font-size: 0.75rem;
+            color: #ccc;
+            margin-left: 2px;
+        }
+    }
+
+    tr.fila-pendiente {
+        background-color: #fcfcfc;
+
+        .user-name {
+            color: #888;
+        }
+    }
+}
+
+// 4. SISTEMA DE BADGES SEMÁNTICOS
+.badge-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    i {
+        font-size: 6px;
+    }
+
+    &.pendiente {
+        background: #fff1f0;
+        color: #ff4d4f;
+    }
+
+    &.entregado {
+        background: #e6f7ff;
+        color: #1890ff;
+    }
+
+    &.calificado {
+        background: #f6ffed;
+        color: #52c41a;
+    }
+}
+
+// 5. ACCIONES Y ESTADOS VACÍOS
+.btn-accion-revisar {
+    @include m.boton-primario;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.loading-state,
+.empty-state {
+    padding: 5rem;
+    text-align: center;
+
+    i {
+        font-size: 3rem;
+        opacity: 0.2;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    p {
+        color: #999;
+        font-family: v.$fuente-lectura;
+    }
+}
+
+// 6. ANIMACIONES
+@keyframes fadeInSeguimiento {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

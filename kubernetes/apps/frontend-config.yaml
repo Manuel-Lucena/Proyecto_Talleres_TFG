@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config # Nombre del mapa de configuración en Kubernetes
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html; # Permite que Angular gestione las rutas SPA
+        }
+
+        # Configuración para NOTICIAS (Sin caché para datos dinámicos)
+        location /noticias/ {
+            root /usr/share/nginx/html;
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+            expires off;
+        }
+
+        # Configuración para USUARIOS (Sin caché para datos dinámicos)
+        location /usuarios/ {
+            root /usr/share/nginx/html;
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+            expires off;
+        }
+
+        # Configuración para TALLERES (Sin caché para datos dinámicos)
+        location /talleres/ {
+            root /usr/share/nginx/html;
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+            expires off;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }

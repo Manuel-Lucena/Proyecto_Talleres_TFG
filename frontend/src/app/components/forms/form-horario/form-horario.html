@@ -1,0 +1,68 @@
+<div class="modal-overlay" (click)="cerrar.emit()">
+    <div class="modal-body" (click)="$event.stopPropagation()">
+        <button class="btn-close" (click)="cerrar.emit()">&times;</button>
+
+        <header class="modal-header-simple">
+            <h2 class="titulo-formulario">Programar Sesión</h2>
+            <p class="subtitulo">Define el horario semanal para esta actividad</p>
+        </header>
+
+        <form [formGroup]="form" (ngSubmit)="enviar()" class="form-sesion">
+
+            <div class="campo-formulario">
+                <app-form-label texto="Día de la semana" [requerido]="true" forId="diaSemana">
+                </app-form-label>
+                <select id="diaSemana" formControlName="diaSemana" class="input-personalizado"
+                    [class.is-invalid]="errorService.mostrarError(form, 'diaSemana')">
+                    <option value="" disabled>Selecciona un día...</option>
+                    <option *ngFor="let d of dias" [value]="d">{{d}}</option>
+                </select>
+                <div class="error-container">
+                    <span *ngIf="errorService.mostrarError(form, 'diaSemana')" class="error-message">
+                        {{ errorService.getErrorMessage(form, 'diaSemana') }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="fila-formulario">
+                <div class="campo-formulario">
+                    <app-form-label texto="Hora Inicio" [requerido]="true"
+                        ayuda="Usa el formato 24h (ej: 09:00 o 16:30)" forId="horaInicio">
+                    </app-form-label>
+                    <input type="time" id="horaInicio" formControlName="fechaInicio" class="input-personalizado"
+                        [class.is-invalid]="errorService.mostrarError(form, 'fechaInicio')">
+                    <div class="error-container">
+                        <span *ngIf="errorService.mostrarError(form, 'fechaInicio')" class="error-message">
+                            {{ errorService.getErrorMessage(form, 'fechaInicio') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="campo-formulario">
+                    <app-form-label texto="Hora Fin" [requerido]="true" ayuda="Debe ser posterior a la hora de inicio"
+                        forId="horaFin">
+                    </app-form-label>
+                    <input type="time" id="horaFin" formControlName="fechaFin" class="input-personalizado"
+                        [class.is-invalid]="errorService.mostrarError(form, 'fechaFin') || form.hasError('fechaInvalida')">
+                    <div class="error-container">
+                        <span
+                            *ngIf="errorService.mostrarError(form, 'fechaFin') || (form.hasError('fechaInvalida') && form.get('fechaFin')?.touched)"
+                            class="error-message">
+                            {{ form.hasError('fechaInvalida') ? 'Debe ser posterior al inicio' :
+                            errorService.getErrorMessage(form, 'fechaFin') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="acciones-form">
+                <button type="button" class="btn-cancelar" (click)="cerrar.emit()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-guardar" [disabled]="form.invalid">
+                    <i class="bi bi-calendar-check"></i> Confirmar
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>

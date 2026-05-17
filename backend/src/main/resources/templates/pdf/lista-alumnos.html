@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body { font-family: 'Helvetica'; }
+        .header { text-align: center; color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background-color: #34495e; color: white; padding: 10px; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1 th:text="${'Taller: ' + taller.nombre}">Nombre del Taller</h1>
+        <p th:text="${'Fecha: ' + #dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th>Email</th>
+                <th>Estado Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="alumno : ${inscripciones}">
+                <td th:text="${alumno.nombreUsuario}">Nombre Alumno</td>
+                <td th:text="${alumno.emailUsuario}">Email</td>
+                <td th:text="${alumno.estadoPago}">Estado</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

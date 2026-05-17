@@ -1,0 +1,252 @@
+/* ==========================================================================
+   PÁGINA: LANDING / INICIO
+   Sección Hero y feed de noticias con gestión.
+   ========================================================================== */
+
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.landing-container {
+    background-color: $color-neutro-max;
+    min-height: 100vh;
+
+    // --- 1. HERO SECTION ---
+    .hero-zone-slim {
+        position: relative;
+        padding: clamp(60px, 10vh, 100px) 0;
+        background-color: $color-secundario-frio-2;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+
+        .hero-bg-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba($color-secundario-frio-2, 0.95) 0%, rgba($color-secundario-frio-2, 0.4) 100%);
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 3;
+        }
+
+
+        .hero-text {
+            .h1-title {
+                @include titulo-seccion($color-neutro-max);
+                font-size: clamp(2rem, 8vw, 3.5rem);
+                margin-bottom: 0.5rem;
+
+                span {
+                    color: $color-marca-principal;
+                }
+
+                // Resalte en verde marca
+            }
+
+            .hero-subtitle {
+                color: rgba(white, 0.8);
+                font-family: $fuente-lectura;
+                font-size: 1.1rem;
+                max-width: 600px;
+            }
+        }
+    }
+
+    // --- 2. ZONA DE CONTENIDO (NOTICIAS / ACTUALIDAD) ---
+    .content-zone {
+        padding: clamp(40px, 8vh, 80px) 0;
+
+        .header-seccion-noticias {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+
+            .title-and-actions {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
+
+        .section-title {
+            @include titulo-seccion;
+            margin-bottom: 0;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+        }
+
+        .vertical-divider {
+            width: 1px;
+            height: 30px;
+            background-color: #dfe6e9;
+            margin: 0 15px;
+
+            @media (max-width: 576px) {
+                display: none;
+            }
+
+        }
+
+        .btn-add-news-mini {
+            background: rgba($color-marca-principal, 0.1);
+            border: 1px solid rgba($color-marca-principal, 0.2);
+            color: $color-marca-principal;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: $color-marca-principal;
+                color: white;
+                transform: translateY(-2px);
+            }
+        }
+
+        .view-all-link {
+            color: $color-superficie-suave;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+
+            &:hover {
+                color: $color-marca-principal;
+            }
+        }
+
+        // --- 3. CARDS DE NOTICIAS ---
+        .news-card {
+            @include card-elevada;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+
+            .card-img-wrapper {
+                position: relative;
+                height: 220px;
+                overflow: hidden;
+
+                .news-img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s ease;
+                }
+
+                .category-tag {
+                    position: absolute;
+                    top: 15px;
+                    left: 15px;
+                    background: $color-marca-principal;
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 4px;
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    z-index: 2;
+                }
+            }
+
+    
+            &:hover .news-img {
+                transform: scale(1.05);
+            }
+
+            .card-body-v {
+                padding: 1.8rem;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+
+                .date {
+                    color: $color-superficie-suave;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    margin-bottom: 0.8rem;
+                    display: block;
+                }
+
+                h3 {
+                    font-family: $fuente-enfasis;
+                    font-size: 1.3rem;
+                    font-weight: 800;
+                    color: $color-secundario-frio-2;
+                    margin-bottom: 1rem;
+                    @include limitar-lineas(2);
+                }
+
+                p {
+                    font-family: $fuente-lectura;
+                    color: #666;
+                    line-height: 1.6;
+                    margin-bottom: 1.5rem;
+                    @include limitar-lineas(3);
+                }
+
+                // Acciones de la card
+                .card-footer-actions {
+                    margin-top: auto;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .btn-read {
+                        background: none;
+                        border: none;
+                        color: $color-marca-principal;
+                        font-family: $fuente-enfasis;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        padding: 0;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    .btn-edit-icon {
+                        background: #f8f9fa;
+                        border: none;
+                        color: $color-superficie-suave;
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.2s;
+                        cursor: pointer;
+
+                        &:hover {
+                            background: $color-secundario-frio-2;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

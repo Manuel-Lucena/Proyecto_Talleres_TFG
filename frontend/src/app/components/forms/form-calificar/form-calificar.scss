@@ -1,0 +1,264 @@
+/* ==========================================================================
+   SISTEMA DE MODALES: PANEL DE CALIFICACIÓN (PROFESOR)
+   Layout dividido en Contexto de Entrega y Formulario de Evaluación.
+   ========================================================================== */
+
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+@use '../../../../styles/formularios' as f;
+
+// 1. ESTRUCTURA BASE Y OVERLAY
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(v.$color-secundario-frio-2, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-body {
+    @include m.animacion-entrada;
+    background: v.$color-neutro-max;
+    max-width: 1000px;
+    width: 95%;
+    border-radius: v.$radio-curvatura * 2;
+    overflow: hidden;
+    box-shadow: v.$sombra-nivel-3;
+    position: relative;
+
+ .btn-close {
+  @include m.boton-cerrar-circular;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000; 
+  width: 40px ;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center ;
+  border-radius: 50%;
+  
+}
+}
+
+// 2. LAYOUT DE DOBLE COLUMNA
+.calificar-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    min-height: 600px;
+
+    @media (max-width: 850px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// --------------------------------------------------------------------------
+// 3. COLUMNA IZQUIERDA: INFORMACIÓN DEL ALUMNO (Contexto)
+// --------------------------------------------------------------------------
+.entrega-contexto {
+    background: v.$color-fondo-pagina;
+    padding: 3.5rem 2.5rem;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+
+    .badge-alumno {
+        color: v.$color-secundario-calido-2;
+        font-family: v.$fuente-enfasis;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    h2 {
+        color: v.$color-secundario-frio-2;
+        font-family: v.$fuente-enfasis;
+        font-size: 1.8rem;
+        margin: 0.5rem 0 2rem;
+    }
+
+    .bloque-info {
+        margin-bottom: 2rem;
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: v.$color-superficie-suave;
+            margin-bottom: 0.8rem;
+        }
+
+        .texto-caja {
+            background: white;
+            padding: 1.2rem;
+            border-radius: v.$radio-curvatura;
+            font-size: 0.9rem;
+            color: v.$color-secundario-frio-2;
+            line-height: 1.6;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+    }
+}
+
+// Listado de archivos adjuntos del alumno
+.grid-archivos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tarjeta-archivo {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: v.$radio-curvatura;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+        font-size: 1.5rem;
+        color: v.$color-secundario-calido-2;
+        margin-right: 12px;
+    }
+
+    .file-name {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: v.$color-secundario-frio-2;
+    }
+
+    .file-action {
+        font-size: 0.7rem;
+        color: v.$color-superficie-suave;
+        font-weight: 600;
+    }
+
+    &:hover {
+        border-color: v.$color-secundario-calido-2;
+        transform: translateX(5px);
+    }
+}
+
+// --------------------------------------------------------------------------
+// 4. COLUMNA DERECHA: FORMULARIO DE CALIFICACIÓN (Profesor)
+// --------------------------------------------------------------------------
+.evaluacion-form {
+    padding: 3.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+
+    .badge-profesor {
+        color: v.$color-marca-principal;
+        font-family: v.$fuente-enfasis;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    // Input numérico para la nota
+    .campo-nota {
+        margin-bottom: 2rem;
+
+        label {
+            display: block;
+            font-family: v.$fuente-enfasis;
+            font-weight: 800;
+            color: v.$color-secundario-frio-2;
+            margin-bottom: 10px;
+        }
+
+        .input-nota-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            input {
+                @include m.estilo-input-base;
+                width: 120px;
+                font-size: 1.5rem;
+                font-weight: 900;
+                text-align: center;
+                color: v.$color-marca-oscuro;
+
+                &.is-invalid {
+                    border-color: v.$color-secundario-calido-1;
+                }
+            }
+
+            .puntos-tag {
+                font-family: v.$fuente-enfasis;
+                font-weight: 800;
+                color: v.$color-superficie-suave;
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .campo-feedback {
+        label {
+            display: block;
+            font-family: v.$fuente-enfasis;
+            font-weight: 800;
+            color: v.$color-secundario-frio-2;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            @include m.estilo-input-base;
+            resize: none;
+            padding: 1.2rem;
+            height: 200px;
+        }
+    }
+}
+
+// 5. ACCIONES DE CIERRE Y CONFIRMACIÓN
+.acciones-evaluacion {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 2rem;
+
+    .btn-confirmar {
+        @include m.boton-primario;
+        width: 100%;
+        height: 55px;
+        font-size: 1rem;
+    }
+
+    .btn-link-cancelar {
+        background: none;
+        border: none;
+        color: v.$color-superficie-suave;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.2s;
+
+        &:hover {
+            color: v.$color-secundario-calido-1;
+        }
+    }
+}
+
+// 6. GESTIÓN DE ERRORES
+.error-container {
+    min-height: 18px;
+    margin-top: 4px;
+
+    .error-message {
+        color: v.$color-secundario-calido-1;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+}

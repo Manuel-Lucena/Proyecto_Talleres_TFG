@@ -1,0 +1,74 @@
+<app-navbar></app-navbar>
+
+<main class="landing-container">
+  <section class="hero-zone-slim">
+    <img src="/images/banner.jpg" class="hero-bg-img" alt="" fetchpriority="high" loading="eager">
+
+    <div class="container">
+      <div class="hero-text">
+        <h1 class="h1-title">Portal de <span>Noticias</span></h1>
+        <p class="hero-subtitle">Actualidad y novedades de nuestra comunidad educativa</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-zone container">
+    <div class="header-seccion-noticias">
+      <div class="title-and-actions">
+        <div class="title-group">
+          <h2 class="section-title">Últimas Noticias</h2>
+          <div class="title-line"></div>
+        </div>
+
+        @if (tokenService.getRol()?.toLowerCase() === 'admin') {
+        <div class="vertical-divider d-none d-sm-block"></div>
+        <button type="button" class="btn-add-news-mini" (click)="abrirCrear()">
+          <i class="bi bi-plus-circle-fill"></i>
+          <span>Nueva</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="row g-4 pb-5">
+      @for (noticia of listaNoticias; track noticia.idNoticia) {
+      <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+        <article class="news-card">
+          <div class="card-img-wrapper">
+            <img [src]="(noticia.imagenUrl && noticia.imagenUrl !== 'null' && noticia.imagenUrl !== '') 
+     ? '/noticias/' + noticia.imagenUrl 
+     : '/noticias/default-noticia.png'" class="news-img" alt="Imagen noticia">
+          </div>
+
+          <div class="card-body-v">
+            <span class="date"><i class="bi bi-calendar3"></i> {{ noticia.fechaPublicacion | date:'dd/MM/yyyy' }}</span>
+            <h3>{{ noticia.titulo }}</h3>
+            <p>{{ noticia.contenido | slice:0:110 }}...</p>
+
+            <div class="card-footer-actions">
+              <button type="button" class="btn-read" [routerLink]="['/noticia', noticia.idNoticia]">
+                Leer noticia
+              </button>
+
+              @if (tokenService.getRol()?.toLowerCase() === 'admin') {
+              <button type="button" class="btn-edit-icon" (click)="abrirEditar(noticia)" title="Editar">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              }
+            </div>
+          </div>
+        </article>
+      </div>
+      }
+    </div>
+  </section>
+
+  @if (mostrarModal) {
+  <app-form-noticia [noticiaParaEditar]="noticiaSeleccionada" (noticiaGuardada)="onPublicarNoticia($event)"
+    (cerrar)="cerrarModal()">
+  </app-form-noticia>
+  }
+</main>
+<app-confirmacion></app-confirmacion>
+<app-modal-notificacion></app-modal-notificacion>
+<app-footer></app-footer>

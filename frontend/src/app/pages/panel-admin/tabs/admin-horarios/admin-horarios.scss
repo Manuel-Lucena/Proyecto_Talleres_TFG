@@ -1,0 +1,201 @@
+/* ==========================================================================
+   VISTA: GESTIÓN DE HORARIOS / CALENDARIO (ADMIN)
+   ========================================================================== */
+
+@import '../../../../../styles/variables';
+@import '../../../../../styles/mixins';
+
+// 1. ESTRUCTURA GENERAL
+.admin-wrapper {
+  padding: 2.5rem;
+  background-color: $color-fondo-pagina;
+  min-height: 100vh;
+  font-family: $fuente-lectura;
+  @include animacion-entrada;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+// 2. ENCABEZADO CON NAVEGACIÓN
+.admin-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+
+  .btn-back {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: $radio-curvatura;
+    border: 1px solid #eee;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: $color-secundario-frio-2;
+
+    &:hover {
+      border-color: $color-marca-principal;
+      color: $color-marca-principal;
+      transform: translateX(-3px);
+      box-shadow: $sombra-nivel-1;
+    }
+  }
+
+  .title-group {
+    .txt-h1 {
+      font-family: $fuente-enfasis;
+      font-weight: 700;
+      font-size: $tamaño-titular-lg;
+      color: $color-secundario-frio-2;
+      margin: 0;
+    }
+
+    .txt-bajada {
+      color: $color-superficie-suave;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+}
+
+// 3. REJILLA DE HORARIOS
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  align-items: start;
+
+  @media (max-width: 1600px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// 4. COLUMNA DE DÍA
+.day-column {
+  background: white;
+  border-radius: $radio-curvatura;
+  box-shadow: $sombra-nivel-1;
+  overflow: hidden;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+
+  .day-header {
+    padding: 1rem;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+
+    span {
+      font-family: $fuente-enfasis;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: $color-secundario-frio-2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+
+  .day-content {
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
+
+// 5. TARJETAS DE SESIÓN (SIN HOVER DE ELEVACIÓN)
+.session-card {
+  @include card-elevada;
+  padding: 0.8rem 32px 0.8rem 0.8rem;
+  border-left: 4px solid $color-marca-principal;
+  position: relative;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  transition: none;
+
+  .session-time {
+    font-family: $fuente-enfasis;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: $color-secundario-frio-2;
+    white-space: nowrap;
+    overflow: visible;
+
+    @media (max-width: 1450px) and (min-width: 1400px),
+    (max-width: 1150px) and (min-width: 1100px) {
+      font-size: 0.75rem;
+    }
+  }
+
+  // Botón de eliminar
+  .btn-delete-session {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    z-index: 5;
+
+    &:hover {
+      color: $color-secundario-calido-1;
+      transform: translateY(-50%) scale(1.2);
+    }
+  }
+}
+
+// 6. BOTÓN DE AÑADIR
+.btn-add-slot {
+  border: 2px dashed #eee;
+  background: transparent;
+  padding: 0.8rem;
+  border-radius: $radio-curvatura;
+  color: $color-superficie-suave;
+  font-family: $fuente-enfasis;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    border-color: $color-marca-principal;
+    color: $color-marca-principal;
+    background: rgba($color-marca-principal, 0.02);
+  }
+}

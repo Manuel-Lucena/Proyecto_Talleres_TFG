@@ -1,0 +1,187 @@
+/* ==========================================================================
+   SISTEMA DE CIERRE: FOOTER PRINCIPAL (AULA VIVA)
+   ========================================================================== */
+@use '../../../../styles/variables' as v;
+
+.main-footer {
+  background-color: v.$color-superficie-oscura;
+  color: rgba(v.$color-neutro-max, 0.7);
+  padding: 70px 0 30px;
+  border-top: 4px solid v.$color-marca-principal;
+  font-family: v.$fuente-lectura;
+
+  // 1. BLOQUE DE IDENTIDAD
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+
+    .logo-img {
+      width: 45px;
+      filter: brightness(0) invert(1);
+    }
+
+    span {
+      font-family: v.$fuente-enfasis;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: v.$color-neutro-max;
+    }
+  }
+
+  // 2. TÍTULOS DE SECCIÓN CON SUBRAYADO DECORATIVO
+  .footer-title {
+    color: v.$color-neutro-max;
+    font-family: v.$fuente-enfasis;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 35px;
+      height: 3px;
+      background: v.$color-marca-principal;
+      border-radius: 10px;
+    }
+  }
+
+  // 3. LISTAS DE ENLACES Y CONTACTO
+  .footer-links, .footer-contact {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        transition: 0.3s ease-in-out;
+
+        &:hover {
+          color: v.$color-marca-principal;
+          padding-left: 5px;
+        }
+      }
+
+      i {
+        color: v.$color-marca-claro;
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+      }
+    }
+  }
+
+  // 4. REDES SOCIALES (ICONOS CIRCULARES)
+  .social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+
+    @media (min-width: 992px) {
+      justify-content: flex-end;
+    }
+
+    a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(v.$color-neutro-max, 0.1);
+      color: v.$color-neutro-max;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s ease-in-out;
+
+      &:hover {
+        background: v.$color-marca-principal;
+        transform: translateY(-3px);
+        box-shadow: v.$sombra-nivel-2;
+      }
+    }
+  }
+
+  // 5. DIVISOR Y SECCIÓN LEGAL
+  .footer-divider {
+    margin: 40px 0 25px;
+    border-top: 1px solid rgba(v.$color-neutro-max, 0.1);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    // Estilos para los enlaces del texto de licencia
+    a {
+      color: v.$color-marca-claro;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+        color: v.$color-neutro-max;
+      }
+    }
+
+ // Iconos de Creative Commons extraídos del HTML
+    .license-icon {
+      height: 20px;         
+      width: auto;
+      margin-left: .3em;
+      vertical-align: middle;
+      filter: invert(0.9);
+      opacity: 0.8;
+    }
+
+    .footer-legal {
+      a {
+        color: rgba(v.$color-neutro-max, 0.4);
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: normal;
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: v.$color-neutro-max;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .license-link {
+      color: v.$color-marca-claro;
+      text-decoration: none;
+      margin-left: 10px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border: 1px solid rgba(v.$color-marca-claro, 0.3);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+
+      i {
+        font-size: 0.9rem;
+        vertical-align: middle;
+      }
+
+      &:hover {
+        background-color: v.$color-marca-principal;
+        color: v.$color-neutro-max;
+        border-color: v.$color-marca-principal;
+      }
+    }
+  }
+}

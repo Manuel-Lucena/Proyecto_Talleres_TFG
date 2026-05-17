@@ -1,0 +1,197 @@
+/* ==========================================================================
+   VISTA: LISTADO DE PARTICIPANTES (AULA VIRTUAL)
+   Diseño de directorio de usuarios con diferenciación de roles y estados.
+   ========================================================================== */
+
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+.participantes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding: 1.5rem 0;
+}
+
+// 1. SECCIÓN POR ROL (Profesores / Alumnos)
+.rol-section {
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 1.5rem;
+        padding: 0 2.5rem;
+
+        .rol-title {
+            font-family: v.$fuente-enfasis;
+            color: v.$color-secundario-frio-2;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .count {
+            font-size: 0.85rem;
+            color: v.$color-superficie-suave;
+            font-weight: 700;
+            font-family: v.$fuente-lectura;
+            background: #f0f0f0;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+    }
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+}
+
+// 2. TARJETA DE USUARIO
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+    padding: 1.2rem 2.5rem;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: #fcfcfc;
+        .info .name {
+            color: v.$color-marca-principal;
+        }
+    }
+
+    // Estilo para Profesores 
+    &.teacher {
+
+        background: linear-gradient(to right, rgba(v.$color-marca-principal, 0.02), white);
+        border-left: 5px solid v.$color-marca-principal;
+    }
+
+    // --- AVATAR Y ESTADO ---
+    .avatar-wrapper {
+        width: 54px; 
+        height: 54px;
+        position: relative;
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px; 
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        // Punto verde de conexión
+        .status-indicator {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 14px;
+            height: 14px;
+            background: #2ecc71;
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+    }
+
+    // --- INFORMACIÓN DE USUARIO ---
+    .info {
+        flex: 1;
+        min-width: 0;
+
+        .name-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2px;
+
+            .name {
+                font-family: v.$fuente-enfasis;
+                font-weight: 700;
+                color: v.$color-secundario-frio-2;
+                font-size: 1.1rem;
+                transition: color 0.3s;
+                @include m.limitar-lineas(1);
+            }
+        }
+
+        .email {
+            font-family: v.$fuente-lectura;
+            font-size: 0.9rem;
+            color: v.$color-superficie-suave;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            i {
+                color: #aaa;
+                font-size: 0.85rem;
+            }
+        }
+    }
+
+    // Indicador de texto para el Rol
+    .badge-rol {
+        font-family: v.$fuente-enfasis;
+        font-size: 0.6rem;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #f0f0f0;
+        color: #888;
+        text-transform: uppercase;
+
+        &.teacher-badge {
+            background: rgba(v.$color-marca-principal, 0.1);
+            color: v.$color-marca-principal;
+        }
+    }
+}
+
+// 3. RESPONSIVE UNIFICADO
+@media (max-width: 768px) {
+    .rol-section .section-header {
+        padding: 0 1.5rem;
+    }
+
+    .user-card {
+        padding: 1.2rem 1.5rem;
+        gap: 1.2rem;
+
+        .avatar-wrapper {
+            width: 48px;
+            height: 48px;
+            img { border-radius: 10px; }
+        }
+
+        .info .name-row {
+            flex-direction: column; 
+            align-items: flex-start;
+            gap: 2px;
+        }
+    }
+}
+
+// 4. ESTADOS DE CARGA Y VACÍO
+.loading-state, .empty-state-card {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: v.$color-superficie-suave;
+
+    i {
+        font-size: 3rem;
+        opacity: 0.2;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    h3 {
+        font-family: v.$fuente-enfasis;
+        color: v.$color-secundario-frio-2;
+    }
+}

@@ -1,0 +1,11 @@
+<div class="form-label-wrapper">
+  <label [for]="forId">{{ texto }}</label>
+  
+  @if (requerido) {
+    <span class="required-mark">*</span>
+  }
+
+  @if (ayuda) {
+    <i class="bi bi-info-circle info-icon" [title]="ayuda"></i>
+  }
+</div>

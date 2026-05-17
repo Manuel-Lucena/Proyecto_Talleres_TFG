@@ -1,0 +1,40 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa # Nombre del autoescalador para la web (Angular)
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend-taller # Apunta al despliegue del frontend
+  minReplicas: 1 # Cantidad mínima de instancias siempre activas
+  maxReplicas: 5 # Límite máximo de instancias en picos de tráfico
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60 # Crea más Pods si la media de CPU supera el 60%
+
+---
+
+# HPA para el Backend
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa # Nombre del autoescalador para la API (Java)
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend-taller # Apunta al despliegue del backend
+  minReplicas: 1 # Cantidad mínima de instancias para el servidor de la API
+  maxReplicas: 3 # Límite máximo de instancias para proteger la base de datos
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70 # Crea más Pods si la media de CPU supera el 70%
